@@ -12,7 +12,7 @@ fn main() {
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
-
+     
     if let Err(e) = run(config) {
         eprintln!("Application error: {e}");
         process::exit(1);
@@ -22,20 +22,24 @@ fn main() {
 
 fn run(config: Config) -> Result<(), Box<dyn Error>>{
 
-    if config.include_file {
-        println!("{}:", config.file_path);
-    }
-        
-    let contents = fs::read_to_string(config.file_path)?;
-    let results = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
-    } else {
-        search(&config.query, &contents)
-    };
+    for file in config.file_path {
 
-    for line in results {
-        if config.include_file { print!("    "); }
-        println!("{line}");
+        if config.include_file {
+            println!("{}:", file);
+        }
+        
+        let contents = fs::read_to_string(file)?;
+        let results = if config.ignore_case {
+            search_case_insensitive(&config.query, &contents)
+        } else {
+            search(&config.query, &contents)
+        };
+
+        for line in results {
+            if config.include_file { print!("    "); }
+            println!("{line}");
+        }
+
     }
 
     Ok(())

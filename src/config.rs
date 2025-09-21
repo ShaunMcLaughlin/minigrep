@@ -1,6 +1,6 @@
 pub struct Config {
     pub query: String,
-    pub file_path: String,
+    pub file_path: Vec<String>,
     pub ignore_case: bool,
     pub include_file: bool,
 }
@@ -34,8 +34,9 @@ impl Config {
         // create config variables
         let ignore_case = options.contains(&'i');
         let include_file = options.contains(&'f');
-        let file_path = finalargs.remove(2);
         let query = finalargs.remove(1);
+        let file_path = Vec::from(&finalargs[1..]);
+
 
         Ok(Config { query, file_path, ignore_case, include_file })
     }
