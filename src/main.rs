@@ -25,7 +25,9 @@ fn run(config: Config) -> Result<(), Box<dyn Error>>{
     for file in config.file_path {
 
         if config.include_file {
+            println!("");
             println!("{}:", file);
+            println!("---------------------------------");
         }
         
         let contents = fs::read_to_string(file)?;
@@ -36,7 +38,6 @@ fn run(config: Config) -> Result<(), Box<dyn Error>>{
         };
 
         for line in results {
-            if config.include_file { print!("    "); }
             println!("{line}");
         }
 
