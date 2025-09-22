@@ -6,6 +6,9 @@ pub struct Config {
 }
 
 impl Config {
+    // Assume any arg starting with '-' is an option. If an option is of lengh > 1 
+    // then we split it into chars. We remove that option from the list of finalargs
+    // and save it in a vector of options.
     pub fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
             return Err("not enough arguments");
@@ -34,7 +37,10 @@ impl Config {
         // create config variables
         let ignore_case = options.contains(&'i');
         let include_file = options.contains(&'f');
+        // the query is the first of the args remaining after options have
+        // been removed
         let query = finalargs.remove(1);
+        // everything else is interpreted as a list of filepaths
         let file_path = Vec::from(&finalargs[1..]);
 
 
