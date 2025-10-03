@@ -9,29 +9,42 @@ impl Config {
     // Assume any arg starting with '-' is an option. If an option is of lengh > 1 
     // then we split it into chars. We remove that option from the list of finalargs
     // and save it in a vector of options.
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
+    pub fn build(mut args: impl Iterator <Item = String>) -> Result<Config, &'static str> {
+        
+        // if args.len() < 3 {
+        //     return Err("not enough arguments");
+        // }
 
         // separate the args into final args and options
         let mut finalargs = vec![];
         let mut options = vec![];
 
+
         // iterate over all args
-        for i in 0..args.len() {
-            let arg = args[i].clone();
-            // options start with - and may be multiple so separate into chars and
-            // add to list of options
+        loop {
+            let Some(arg) = args.next() else {
+                break;
+            };
+
+            // if the start of the arg is '-' then append the remaining letters
+            // (individually) to `options`
             if &arg[0..1] == "-" {
-                let option : Vec::<char>= arg[1..].chars().collect();
-                for opt in option {
-                    options.push(opt);
-                }
+                // let mut option : Vec::<char>= arg[1..].chars().collect();
+                // options.append(&mut option);
+                options.append(&mut arg[1..].chars().collect());
+                
+            // otherwise add the entire arg to finalargs 
             } else {
                 // otherwise add arg to final args
                 finalargs.push(arg);
             }
+        }
+            // let arg = current_command.unwrap();
+            // options start with - and may be multiple so separate into chars and
+            // add to list of options
+
+        if finalargs.len() < 2 {
+            return Err("Not enough arguments")
         }
 
         // create config variables
@@ -50,7 +63,8 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::search;
+    use crate::search_case_insensitive;
 
     #[test]
     fn case_sensitive() {
@@ -77,3 +91,4 @@ Trust me.";
     }
 
 }
+
